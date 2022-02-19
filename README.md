@@ -5,7 +5,11 @@ code is done in python so pyhton is must.
 
 
 
-
+import tkinter 
+import time
+import sys
 must import this modules in the software you are using.
 further process can be done according to or copying the main.py from the repositry to the software you are using.
+
+please provide suggestions which can be done in the code
 
