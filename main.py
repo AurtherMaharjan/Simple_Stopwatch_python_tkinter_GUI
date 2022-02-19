@@ -1,124 +1,73 @@
-import tkinter
 from tkinter import *
-import shutil
-import os
-import easygui
-from tkinter import filedialog
-from tkinter import messagebox as mb
-from PIL import Image, ImageTk
-
-
-def open_window():
-    read = easygui.fileopenbox()
-    return read
-
-def open_file():
-    string = open_window()
-    try:
-        os.startfile(string)
-        return filedialog.askopenfilename()
-    except:
-        mb.showinfo('confirmation', "File not found!")
-
-
-
-def copy_file():
-    try:
-        source1=open_window()
-        destination1=filedialog.askdirectory()
-        shutil.copy2(source1,destination1)
-        mb.showinfo("confirmation", "File copied")
-    except FileNotFoundError:
-        mb.showinfo("confirmation", "File Not Copied")
-
-
-
-def delete_file():
-    try:
-        del_file = open_window()
-        os.path.exists(del_file)
-        os.remove(del_file)
-        mb.showinfo("confirmation", "File Deleted.")
-    except:
-        mb.showinfo("confirmation", "File do not exist")
-
-def rename_file():
-    chosenFile = open_window()
-    path1 = os.path.dirname(chosenFile)
-    extension=os.path.splitext(chosenFile)[1]
-    print("Enter new name for the file")
-    newName=input()
-    path=os.path.join(path1, newName+extension)
-    print(path)
-    os.rename(chosenFile,path)
-    mb.showinfo("confirmation", "File Renamed Successfully")
-
-def move_file():
-    try:
-        source=open_window()
-        destination=filedialog.askdirectory()
-        if(source==destination):
-            mb.showinfo("confirmation", "Source And Destination Are Same")
-        else:
-            shutil.move(source, destination)
-            mb.showinfo("confirmation", "File Moved Successfully")
-    except FileNotFoundError:
-        mb.showinfo("confirmation", "File Not Moved")
-
-def make_folder():
-    newFolderPath=filedialog.askdirectory()
-    print("Enter the name of the new folder")
-    newFolder=input()
-    path=os.path.join(newFolderPath, newFolder)
-    os.mkdir(path)
-    mb.showinfo("confirmation", "New Folder created")
-
-def remove_folder():
-    try:
-            delFolder=filedialog.askdirectory()
-            os.rmdir(delFolder)
-            mb.showinfo("confirmation", "Folder deleted Successfully")
-    except OSError:
-        mb.showinfo("confirmation", "Folder Not Empty")
-
-
-def list_files():
-    try:
-        folderList=filedialog.askdirectory()
-        sortlist=sorted(os.listdir(folderList))
-        i=0
-        print("files in ", folderList, "folder are:")
-        while(i<len(sortlist)):
-            print(sortlist[i]+"\n")
-            i+=1
-    except FileNotFoundError:
-        mb.showinfo("confirmation", "No Files You Looking For!")
-
-
-
-root=Tk()
-
-canv=Canvas(root, width=400, height=300, bg="lightblue")
-canv.grid(row=0, column=2)
-
-img = ImageTk.PhotoImage(Image.open(r"C:\Users\kenda\PycharmProjects\filemanager\filemanager.ico"))
-canv.create_image(180, 150, anchor=tkinter.CENTER, image=img)
-
-root.iconbitmap("C:\\Users\\kenda\\PycharmProjects\\filemanager\\filemanager.ico")
-root.title("File Manager")
-root.resizable(False, False)
-
-Label(root, text="File Manager" "\n", font=("Times", 16),
-fg="blue").grid(row = 5, column = 2,)
-
-Button(root, text="Open a File", bg="lightgreen", command = open_file).grid(row=15, column =2)
-Button(root, text = "Copy a File", bg="lightgreen", command = copy_file).grid(row = 25, column = 2)
-Button(root, text = "Delete a File", bg="lightgreen", command = delete_file).grid(row = 35, column = 2)
-Button(root, text = "Rename a File", bg="lightgreen", command = rename_file).grid(row = 45, column = 2)
-Button(root, text = "Move a File", bg="lightgreen", command = move_file).grid(row = 55, column =2)
-Button(root, text = "Make a Folder", bg="lightgreen", command = make_folder).grid(row = 75, column = 2)
-Button(root, text = "Remove a Folder", bg="lightgreen", command = remove_folder).grid(row = 65, column =2)
-Button(root, text = "List all Files in Directory", bg="lightgreen", command = list_files).grid(row = 85,column = 2)
-root.mainloop()
-
-
+import sys
+import time
+global count
+count=0
+class stopwatch():
+    def reset(self):
+        global count
+        count=1
+        self.t.set('00:00:00')
+    def start(self):
+        global count
+        count=0
+        self.timer()
+    def stop(self):
+        global count
+        count=1
+    def close(self):
+        self.root.destroy()
+    def timer(self):
+        global count
+        if(count==0):
+            self.d = str(self.t.get())
+            h,m,s = map(int,self.d.split(":"))
+            h = int(h)
+            m=int(m)
+            s= int(s)
+            if(s<59):
+                s+=1
+            elif(s==59):
+                s=0
+                if(m<59):
+                    m+=1
+                elif(m==59):
+                    m=0
+                    h+=1
+            if(h<10):
+                h = str(0)+str(h)
+            else:
+                h= str(h)
+            if(m<10):
+                m = str(0)+str(m)
+            else:
+                m = str(m)
+            if(s<10):
+                s=str(0)+str(s)
+            else:
+                s=str(s)
+            self.d=h+":"+m+":"+s
+            self.t.set(self.d)
+            if(count==0):
+                self.root.after(1000,self.timer)
+    def __init__(self):
+        self.root=Tk()
+        self.root.iconbitmap("C:\\Users\\kenda\\PycharmProjects\\pythonProject1\\stopwatch.ico")
+        self.root.title("Stop Watch")
+        self.root.geometry("550x200")
+        self.t = StringVar()
+        self.t.set("00:00:00")
+        self.lb = Label(self.root,textvariable=self.t,font=("algerian 40 bold"),bg="light blue")
+        self.buttont1 = Button(self.root,text="Start",command=self.start,font=("Times 12 bold"),bg=("Purple"))
+        self.buttont2 = Button(self.root,text="Pause",command=self.stop,font=("Times 12 bold"),bg=("red"))
+        self.buttont3 = Button(self.root,text="Reset",command=self.reset,font=("Times 12 bold"),bg=("orange"))
+        self.buttont4 = Button(self.root, text="Exit", command=self.close,font=("Times 12 bold"),bg=("yellow"))
+        self.lb.place(x=160,y=10)
+        self.buttont1.place(x=120,y=100)
+        self.buttont2.place(x=220,y=100)
+        self.buttont3.place(x=320,y=100)
+        self.buttont4.place(x=420,y=100)
+        self.label = Label(self.root,text="",font=("Times 40 bold"))
+        self.root.configure(bg='black')
+        self.root.mainloop()
+a=stopwatch()
